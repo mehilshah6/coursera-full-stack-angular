@@ -56,6 +56,9 @@ fxLayoutGap="10px">
     
     <div fxFlex>
       <h2>Corporate Leadership</h2>
+      <div [hidden] = "leaders" class = "middleDiv">
+        <mat-spinner color="accent"></mat-spinner>
+      </div>
       <mat-list *ngIf = "leaders">
         <mat-list-item *ngFor = "let leader of leaders">
           <img matListAvatar src = {{leader.image}}>

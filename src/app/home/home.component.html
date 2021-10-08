@@ -4,7 +4,9 @@ fxLayout.sm="column"
 fxLayout.xs="column"
 fxLayoutAlign.gt-md="space-around center"
 fxLayoutGap="10px">
-
+<div [hidden] = "dish && promotion && leader">
+  <mat-spinner></mat-spinner>
+</div>
 <mat-card *ngIf="dish" fxFlex>
   <mat-card-header>
     <div mat-card-avatar></div>

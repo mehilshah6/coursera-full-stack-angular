@@ -1,5 +1,8 @@
 <div class = "container" fxLayout = "column" fxLayoutGap = "10px">
-    <div fxFlex>
+    <div [hidden] = "dishes" class = "middleDiv">
+        <mat-spinner></mat-spinner>
+    </div>
+    <div fxFlex *ngIf = "dishes">
         <div>
             <h3>Menu</h3>
             <hr/>

@@ -18,26 +18,32 @@ html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 .container {
-    margin : 20px;
-    display : flex;
+  margin : 20px;
+  display : flex;
 }
 
 @mixin zero-margin($pad-up-down, $pad-left-right) {
-    margin: 0px auto;
-    padding: $pad-up-down $pad-left-right;
+  margin: 0px auto;
+  padding: $pad-up-down $pad-left-right;
 }
 
 
 .background-primary {
-    background-color: $background-dark!important;
-  }
+  background-color: $background-dark!important;
+}
 .background-accent {
-    background-color: $accent-color!important;
-  }
+  background-color: $accent-color!important;
+}
 .text-floral-white {
-    color: floralwhite!important;
+  color: floralwhite!important;
 }
 
 .flex-spacer {
   flex: 1 1 auto;
+}
+
+.middleDiv {
+  position: relative;
+  left : 45%;
+  top  : 50%;
 }

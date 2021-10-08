@@ -4,7 +4,9 @@ fxLayout.sm="column"
 fxLayout.xs="column"
 fxLayoutAlign.gt-md="space-around center" 
 fxLayoutGap.xs="0">
-
+<div [hidden] = "dish" class = "middleDiv" >
+    <mat-spinner color="accent"></mat-spinner>
+</div>
 <div fxFlex="40">
     <div fxFlex *ngIf = "dish">
         <mat-card>
