@@ -1,5 +1,5 @@
 <div class="container"
-fxLayout="row"
+fxLayout="column"
 fxLayout.sm="column"
 fxLayout.xs="column"
 fxLayoutAlign.gt-md="space-around center" 
@@ -12,7 +12,7 @@ fxLayoutGap.xs="0">
                     <h2>{{dish.name | uppercase}}</h2>
                 </mat-card-title>
             </mat-card-header>
-            <img mat-card-image src = {{dish.image}} alt = {{dish.name}}>   
+            <img mat-card-image src="{{ baseURL + dish.image }}" alt = {{dish.name}}>   
             <mat-card-content>
                 <p>{{dish.description}}</p>
             </mat-card-content>
@@ -49,29 +49,35 @@ fxLayoutGap.xs="0">
         </div>
     </div>
 </div>
-        
-        <form novalidate [formGroup]="commentForm" #fform="ngForm" (ngSubmit)="onSubmit()">
-            <h2>New Comment</h2>
-            <p>
-                <mat-form-field  class = "full-width">
-                    <input matInput formControlName = "author" placeholder="Name" type = "text" required>
-                    <mat-error *ngIf="formErrors.author">{{formErrors.author}}</mat-error>
-                </mat-form-field>
-            </p>
-            <p>
-                <mat-slider
-                [max]="5"
-                [min]="1"
-                [step]="1"
-                [thumbLabel]="true"
-                formControlName = "rating">
-            </mat-slider>
-        </p>
-        <p>
-            <textarea matInput formControlName = "comment" placeholder="Your Comment" type="text" rows = 12 required>
-            </textarea>
-            <mat-error *ngIf="formErrors.comment">{{formErrors.comment}}</mat-error>
-        </p>
-        <button type="submit" [disabled] = "this.commentForm.invalid" mat-button class="background-primary text-floral-white">Submit</button>
-    </form>
+
+<form class = "full-width" novalidate [formGroup]="commentForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+    <h2>New Comment</h2>
+    <p>
+        <mat-form-field  class = "full-width">
+            <input matInput formControlName = "author" placeholder="Name" type = "text" required>
+            <mat-error *ngIf="formErrors.author">{{formErrors.author}}</mat-error>
+        </mat-form-field>
+    </p>
+    <p>
+        <mat-slider
+        [max]="5"
+        [min]="1"
+        [step]="1"
+        [thumbLabel]="true"
+        formControlName = "rating">
+    </mat-slider>
+</p>
+<p>
+    <mat-form-field class="full-width">
+        <textarea matInput formControlName = "comment" placeholder="Your Comment" type="text" rows = 12 required>
+        </textarea>
+    </mat-form-field>
+    <mat-error *ngIf="formErrors.comment">{{formErrors.comment}}</mat-error>
+</p>
+<button type="submit" [disabled] = "this.commentForm.invalid" mat-button class="background-primary text-floral-white">Submit</button>
+</form>
+<div fxFlex *ngIf="errMess">
+    <h2>Error</h2>
+    <h4>{{errMess}}</h4>
+</div>
 </div>

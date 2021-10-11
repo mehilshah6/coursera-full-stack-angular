@@ -4,9 +4,6 @@ fxLayout.sm="column"
 fxLayout.xs="column"
 fxLayoutAlign.gt-md="space-around center"
 fxLayoutGap="10px">
-<div [hidden] = "dish && promotion && leader">
-  <mat-spinner></mat-spinner>
-</div>
 <mat-card *ngIf="dish" fxFlex>
   <mat-card-header>
     <div mat-card-avatar></div>
@@ -14,7 +11,7 @@ fxLayoutGap="10px">
       <h3>{{dish.name | uppercase}}</h3>
     </mat-card-title>
   </mat-card-header>
-  <img mat-card-image src={{dish.image}} alt={{dish.name}}>
+  <img mat-card-image src="{{ baseURL + dish.image }}" alt={{dish.name}}>
   <mat-card-content>
     <p>{{dish.description}}
     </p>
@@ -48,5 +45,8 @@ fxLayoutGap="10px">
     </p>
   </mat-card-content>
 </mat-card>
-
+<div fxFlex *ngIf="errMess">
+  <h2>Error</h2>
+  <h4>{{errMess}}</h4>
+</div>
 </div>
