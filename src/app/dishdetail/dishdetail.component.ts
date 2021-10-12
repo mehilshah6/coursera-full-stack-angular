@@ -6,14 +6,23 @@ import { Location } from '@angular/common';
 import { switchMap } from 'rxjs/operators';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Comment } from '../shared/comment';
+import { flyInOut, expand } from '../animations/app.animations';
 
 @Component({
   selector: 'app-dishdetail',
   templateUrl: './dishdetail.component.html',
-  styleUrls: ['./dishdetail.component.scss']
+  styleUrls: ['./dishdetail.component.scss'],
+  host: {
+    '[@flyInOut]': 'true',
+    'style': 'display: block;'
+  },
+  animations : [
+    flyInOut(),
+    expand()
+  ]
 })
 export class DishdetailComponent implements OnInit {
-
+  
   @ViewChild('fform') commentFormDirective: any;
   
   dish! : Dish;
@@ -23,6 +32,7 @@ export class DishdetailComponent implements OnInit {
   commentForm! : FormGroup;
   comment! : Comment;
   errMess! : string;
+  dishCopy! : Dish;
   
   formErrors : any = {
     'author': '',
@@ -51,8 +61,9 @@ export class DishdetailComponent implements OnInit {
       const id = this.route.snapshot.params['id'];
       this.dishservice.getDish(id).subscribe(dish => this.dish = dish, errmess => this.errMess = errmess);
       this.dishservice.getDishIds().subscribe(dishIds => this.dishIds = dishIds, errmess => this.errMess = errmess);
-      this.route.params.pipe(switchMap((params: Params) => this.dishservice.getDish(params['id'])))
-      .subscribe(dish => { this.dish = dish; this.setPrevNext(dish.id); }, errmess => this.errMess = errmess);
+      this.route.params.pipe(switchMap((params: Params) => { return this.dishservice.getDish(params['id']); }))
+      .subscribe(dish => { this.dish = dish; this.dishCopy = dish; this.setPrevNext(dish.id); },
+      errmess => this.errMess = <any>errmess);
     }
     
     goBack(): void {
@@ -79,34 +90,37 @@ export class DishdetailComponent implements OnInit {
       if (this.commentForm.valid) {
         this.comment = this.commentForm.value;
         this.comment.date = new Date().toISOString(); 
-        this.dish.comments.push(this.comment);
-        this.commentForm.reset({
-          author : '',
-          rating : 5,
-          comment : ''
-        });
-        for (let control in this.commentForm.controls) {
-          this.commentForm.controls[control].setErrors(null);
+        this.dishCopy.comments.push(this.comment);
+        this.dishservice.putDish(this.dishCopy).subscribe(
+          dish => { this.dish = dish; this.dishCopy = dish;},
+          errmess => { this.errMess = <any>errmess; });
+          this.commentForm.reset({
+            author : '',
+            rating : 5,
+            comment : ''
+          });
+          for (let control in this.commentForm.controls) {
+            this.commentForm.controls[control].setErrors(null);
+          }
         }
       }
-    }
-    
-    onValueChanged(data?: any) {
-      if (!this.commentForm) { return; }
-      const form = this.commentForm;
-      for (const field in this.formErrors) {
-        if (this.formErrors.hasOwnProperty(field)) {
-          this.formErrors[field] = '';
-          const control = form.get(field);
-          if (control && control.dirty && !control.valid) {
-            const messages = this.validationMessages[field];
-            for (const key in control.errors) {
-              if (control.errors.hasOwnProperty(key)) {
-                this.formErrors[field] += messages[key] + ' ';
+      
+      onValueChanged(data?: any) {
+        if (!this.commentForm) { return; }
+        const form = this.commentForm;
+        for (const field in this.formErrors) {
+          if (this.formErrors.hasOwnProperty(field)) {
+            this.formErrors[field] = '';
+            const control = form.get(field);
+            if (control && control.dirty && !control.valid) {
+              const messages = this.validationMessages[field];
+              for (const key in control.errors) {
+                if (control.errors.hasOwnProperty(key)) {
+                  this.formErrors[field] += messages[key] + ' ';
+                }
               }
             }
           }
         }
       }
     }
-  }
