@@ -39,7 +39,7 @@
   <div fxFlex fxFlexOffset="20px" class="form-size">
     <h2>Send us your Feedback</h2>
 
-    <form novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
+    <form *ngIf = "spinnerVisibility == false && !receivedFeedback" novalidate [formGroup]="feedbackForm" #fform="ngForm" (ngSubmit)="onSubmit()">
       <p>
         <mat-form-field class="half-width">
           <input matInput formControlName="firstname" placeholder="First Name" type="text" required>
@@ -72,5 +72,19 @@
       </p>
       <button type="submit" mat-button class="background-primary text-floral-white">Submit</button>
     </form>
+
+    <div [hidden] = "!spinnerVisibility">
+      <h2>Submitting Form</h2>
+      <mat-spinner></mat-spinner>
+    </div>
+
+    <div *ngIf = "receivedFeedback"> 
+      <h2>Your Submission</h2>
+      <h3><b>First Name </b>: {{receivedFeedback?.firstname}}</h3>
+      <h3><b>Last Name </b>: {{receivedFeedback?.lastname}}</h3>
+      <h3><b>Tel </b>: {{receivedFeedback?.telnum}}</h3>
+      <h3><b>Email </b>: {{receivedFeedback?.email}}</h3>
+      <h3 *ngIf = "receivedFeedback?.message"><b>Feedback </b>: {{receivedFeedback?.message}}</h3>
+    </div>
   </div>
 </div>

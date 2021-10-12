@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Feedback } from '../shared/feedback';
 import { flyInOut, expand } from '../animations/app.animations';
+import { FeedbackService } from '../services/feedback.service';
 
 @Component({
   selector: 'app-contact',
@@ -22,6 +23,8 @@ export class ContactComponent implements OnInit {
   
   feedbackForm! : FormGroup;
   feedback! : Feedback;
+  receivedFeedback! : Feedback;
+  spinnerVisibility! : boolean;
 
   formErrors : any = {
     'firstname': '',
@@ -51,7 +54,9 @@ export class ContactComponent implements OnInit {
     },
   };
   
-  constructor(private fb : FormBuilder) { 
+  constructor(private fb : FormBuilder,
+    private feedbackService : FeedbackService) { 
+    this.spinnerVisibility = false;
     this.createForm();
   }
   
@@ -59,13 +64,15 @@ export class ContactComponent implements OnInit {
   }
   
   createForm() {
+    let id = Math.floor(1000 + Math.random() * 9000).toString();
     this.feedbackForm = this.fb.group({
-      firstname : ['', Validators.required, Validators.minLength(2), Validators.maxLength(25)],
-      lastname : ['', Validators.required, Validators.minLength(2), Validators.maxLength(25)],
-      telnum : ['', Validators.required, Validators.pattern],
-      email : ['', Validators.required, Validators.email],
-      agree : false,
-      contactType : 'None',
+      id : id,
+      firstname : ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
+      lastname : ['', [Validators.required, Validators.minLength(2), Validators.maxLength(25)]],
+      telnum : ['', [Validators.required, Validators.pattern]],
+      email : ['', [Validators.required, Validators.email]],
+      agree : true,
+      contactType : 'Tel',
       message : ''
     });
 
@@ -73,20 +80,15 @@ export class ContactComponent implements OnInit {
     this.onValueChanged();
   }
   
-  onSubmit() {
+  async onSubmit() {
     if (this.feedbackForm.valid) {
+      console.log(this.receivedFeedback);
+      this.spinnerVisibility = true;
       this.feedback = this.feedbackForm.value;
-      console.log(this.feedback);
-      this.feedbackForm.reset({
-        firstname: '',
-        lastname: '',
-        telnum: '',
-        email: '',
-        agree: false,
-        contacttype: 'None',
-        message: ''
-      });
-      this.feedbackFormDirective.resetForm();
+      await this.feedbackService.postFeedback(this.feedback);
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await this.feedbackService.getFeedback(this.feedback.id).then(feedback => this.receivedFeedback = feedback);
+      this.spinnerVisibility = false;
     }
   }
 
